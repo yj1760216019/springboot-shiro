@@ -15,9 +15,9 @@ spring:
   #数据库相关配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://rm-bp1w9513ar5mz8f4fo.mysql.rds.aliyuncs.com:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
-    username: "tengfei"
-    password: "*Ab135803"
+    url: jdbc:mysql://****:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: "*****"
+    password: "******"
     type: com.alibaba.druid.pool.DruidDataSource
 
 

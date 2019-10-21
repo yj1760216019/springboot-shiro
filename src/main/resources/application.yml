@@ -1,0 +1,75 @@
+#指定项目名称和端口
+server:
+  port: 7001
+  servlet:
+    context-path: /shiro
+
+spring:
+  #  # 配置yml配置文件
+  #  profiles:
+  #    # 决定使用哪个环境的配置文件  dev stage
+  #    active:
+  #    # 引入外部yml配置文件
+  #    include:
+
+  #数据库相关配置
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-bp1w9513ar5mz8f4fo.mysql.rds.aliyuncs.com:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: "tengfei"
+    password: "*Ab135803"
+    type: com.alibaba.druid.pool.DruidDataSource
+
+
+  #redis缓存相关配置
+  redis:
+    host: "localhost"
+    port: 6379
+    password: "123456"
+    timeout: 1000
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: 1
+
+
+#mybatis相关配置
+mybatis:
+  type-aliases-package: "com.carlinx.shiro.entity.dbo"
+  mapper-locations: "classpath: mybatis/mappers/*Mapper.xml"
+
+
+#tkMapper配置
+mapper:
+  #通用mapper基类配置
+  mappers: "com.carlinx.shiro.base.tkmapper.BaseMapper"
+  identity: MYSQL
+
+#分页插件配置
+pagehelper:
+  #指定数据库类型  不指定会自动检测数据库类型
+  helper-dialect: mysql
+  #是否启用分页合理化  为true时 pageNum小于1时 查询第一页  pageNum大于pages时 查询最后一页  为false时  查询结果为空
+  reasonable: true
+  # 默认值false，分页插件会从查询方法的参数值中，自动根据上面 params 配置的字段中取值，查找到合适的值时就会自动分页
+  support-methods-arguments: true
+  # 配置从对象中根据属性名取值
+  params: count=countSql
+  # rowBouns是否使用count查询
+  row-bounds-with-count: true
+
+
+
+
+# AES密码加密私钥 （Base64加密）
+encrypt-aes-key: "V2FuZzkyNuYSKIuwqTQkFQSUpXVA"
+# JWT认证加密私钥
+encrypt-jwt-key: "U0JBUElOENhspJrzkyNjQ1NA"
+# AccessToken 过期时间(5分钟)
+access-token-expire-time: 1200
+# RefreshToken过期时间(30分钟)
+refresh-token-expire-time: 1800
+# Shiro缓存过期时间（5分钟）
+shiro-cache-expire-time: 1200

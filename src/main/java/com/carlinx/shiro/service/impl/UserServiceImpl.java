@@ -24,8 +24,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserDBO> implements UserSer
     }
 
     @Override
-    public UserDBO selectByPrimaryKey(Long userId) {
-        UserDBO userDBO = userMapper.selectByPrimaryKey(userId);
+    public UserDBO selectById(Long userId) {
+        Example example = new Example(UserDBO.class);
+        example.createCriteria().andEqualTo("userId",userId);
+        UserDBO userDBO = userMapper.selectOneByExample(example);
         return userDBO;
     }
+
 }

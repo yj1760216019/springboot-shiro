@@ -1,11 +1,18 @@
 package com.carlinx.shiro.entity.dbo;
 
 
-import javax.persistence.Table;
+import com.carlinx.shiro.base.serializer.JsonSerializerLong;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.*;
 
 @Table(name = "permission")
 public class PermissionDBO {
     //权限id
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @JsonSerialize(using = JsonSerializerLong.class)
+    @OrderBy("desc")
     private Long permissionId;
     //权限名称
     private String permissionName;

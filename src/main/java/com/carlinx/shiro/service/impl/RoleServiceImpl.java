@@ -13,12 +13,5 @@ import java.util.Set;
 @Service
 public class RoleServiceImpl extends BaseServiceImpl<RoleDBO> implements RoleService {
 
-    @Autowired
-    private RoleMapper roleMapper;
 
-    @Override
-    public List<RoleDBO> selectRolesByIds(List<Long> roleIds) {
-        List<RoleDBO> roleDBOS = roleMapper.selectByPrimaryKeys(roleIds);
-        return roleDBOS;
-    }
 }

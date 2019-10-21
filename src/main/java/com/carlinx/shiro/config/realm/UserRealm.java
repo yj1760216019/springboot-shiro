@@ -18,8 +18,8 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.*;
+
 
 public class UserRealm extends AuthorizingRealm {
 
@@ -44,6 +44,8 @@ public class UserRealm extends AuthorizingRealm {
     }
 
 
+
+
     /**
      * 需要检测用户权限时调用
      * @param principals
@@ -52,6 +54,11 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         redisOperator = SpringUtil.getBean(RedisOperator.class);
+        userService = SpringUtil.getBean(UserService.class);
+        roleService = SpringUtil.getBean(RoleService.class);
+        permissionService = SpringUtil.getBean(PermissionService.class);
+        userRoleRelationService = SpringUtil.getBean(UserRoleRelationService.class);
+        rolePermissionRelationService = SpringUtil.getBean(RolePermissionRelationService.class);
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         String userId = JwtUtil.getClaim(principals.getPrimaryPrincipal().toString(), JwtConstant.PRIMART_KEY);
         //在此处判断缓存
@@ -63,17 +70,26 @@ public class UserRealm extends AuthorizingRealm {
         //查询用户角色关系
         List<UserRoleRelationDBO> userRoleRelationDBOS = userRoleRelationService.selectUserRoleRelationsByUserId(Long.parseLong(userId));
         if(CollUtil.isNotEmpty(userRoleRelationDBOS)){
-            List<Long> roleIds = (List)CollUtil.getFieldValues(userRoleRelationDBOS,"roleId");
-            //查询角色
-            List<RoleDBO> roleDBOS = roleService.selectRolesByIds(roleIds);
-            List<String> roleIdentitys = (List)CollUtil.getFieldValues(roleDBOS, "roleIdentity");
+            List<Long> roleIds = new ArrayList<>();
+            for (UserRoleRelationDBO userRoleRelationDBO : userRoleRelationDBOS) {
+                roleIds.add(userRoleRelationDBO.getRoleId());
+            }
+            //获取角色
+            List<RoleDBO> roleDBOS = roleService.selectByPrimaryKeys(roleIds.toArray());
+            List<String> roleIdentitys = new ArrayList<>();
+            for (RoleDBO roleDBO : roleDBOS) {
+                roleIdentitys.add(roleDBO.getRoleIdentity());
+            }
             //添加用户角色
             authorizationInfo.addRoles(roleIdentitys);
             //查权限
             List<RolePermissionRelationDBO> rolePermissionRelationDBOS = rolePermissionRelationService.selectRolePermissionRelationsByRoleIds(roleIds);
             if(CollUtil.isNotEmpty(rolePermissionRelationDBOS)){
-                List<Long> permissionIds = (List)CollUtil.getFieldValues(rolePermissionRelationDBOS, "permissionId");
-                List<PermissionDBO> permissionDBOS = permissionService.selectPermissionsByIds(permissionIds);
+                List<Long> permissionIds = new ArrayList<>();
+                for (RolePermissionRelationDBO rolePermissionRelationDBO : rolePermissionRelationDBOS) {
+                    permissionIds.add(rolePermissionRelationDBO.getPermissionId());
+                }
+                List<PermissionDBO> permissionDBOS = permissionService.selectByPrimaryKeys(permissionIds.toArray());
                 Set<String> permissions = new HashSet<>();
                 for (PermissionDBO permissionDBO : permissionDBOS) {
                     permissions.add(permissionDBO.getPermissionIdentity());
@@ -95,13 +111,14 @@ public class UserRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         redisOperator = SpringUtil.getBean(RedisOperator.class);
+        userService = SpringUtil.getBean(UserService.class);
         String token = (String)authenticationToken.getCredentials();
         //解密获取用户主键
         String userId = JwtUtil.getClaim(token, JwtConstant.PRIMART_KEY);
         if(userId == null || userId == ""){
             throw new RuntimeException("解析token未获取到用户信息");
         }
-        UserDBO userDBO = userService.selectByPrimaryKey(Long.parseLong(userId));
+        UserDBO userDBO = userService.selectByPrimaryKey(userId);
         if(userDBO == null){
             throw new RuntimeException("该账号不存在");
         }

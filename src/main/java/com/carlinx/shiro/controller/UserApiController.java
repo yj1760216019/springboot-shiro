@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 @Api("用户认证管理")
 public class UserApiController {
     @Value("${access-token-expire-time}")
-    private String accessTokenExpireTime = "1200";
+    private String accessTokenExpireTime; //= "1200";
     @Autowired
     private RedisOperator redisOperator;
 

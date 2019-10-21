@@ -14,14 +14,6 @@ import java.util.Set;
 @Service
 public class PermissionServiceImpl extends BaseServiceImpl<PermissionDBO> implements PermissionService {
 
-    @Autowired
-    private PermissionMapper permissionMapper;
 
 
-
-    @Override
-    public List<PermissionDBO> selectPermissionsByIds(List<Long> permissionIds) {
-        List<PermissionDBO> permissionDBOS = permissionMapper.selectByPrimaryKeys(permissionIds);
-        return permissionDBOS;
-    }
 }

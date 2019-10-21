@@ -1,13 +1,12 @@
 package com.carlinx.shiro.service;
 
+import com.carlinx.shiro.base.service.BaseService;
 import com.carlinx.shiro.entity.dbo.RoleDBO;
 
 import java.util.List;
 import java.util.Set;
 
-public interface RoleService {
+public interface RoleService extends BaseService<RoleDBO> {
 
-    //根据用户id查询用户角色
-    List<RoleDBO> selectRolesByIds(List<Long> roleIds);
 
 }

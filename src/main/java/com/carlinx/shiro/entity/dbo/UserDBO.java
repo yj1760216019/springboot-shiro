@@ -1,12 +1,19 @@
 package com.carlinx.shiro.entity.dbo;
 
-import javax.persistence.Table;
+import com.carlinx.shiro.base.serializer.JsonSerializerLong;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.*;
 import java.util.Date;
 
 
 @Table(name = "user")
 public class UserDBO {
     //用户id
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @JsonSerialize(using = JsonSerializerLong.class)
+    @OrderBy("desc")
     private Long userId;
     //用户名
     private String userName;
@@ -19,23 +26,9 @@ public class UserDBO {
     //生日
     private Date birthday;
     //是否锁定
-    private Boolean lock;
+    //private Boolean lock;
     //用户状态
     private Integer status;
-
-    public UserDBO() {
-    }
-
-    public UserDBO(Long userId, String userName, String password, String salt, Integer age, Date birthday, Boolean lock, Integer status) {
-        this.userId = userId;
-        this.userName = userName;
-        this.password = password;
-        this.salt = salt;
-        this.age = age;
-        this.birthday = birthday;
-        this.lock = lock;
-        this.status = status;
-    }
 
     public Long getUserId() {
         return userId;
@@ -83,14 +76,6 @@ public class UserDBO {
 
     public void setBirthday(Date birthday) {
         this.birthday = birthday;
-    }
-
-    public Boolean getLock() {
-        return lock;
-    }
-
-    public void setLock(Boolean lock) {
-        this.lock = lock;
     }
 
     public Integer getStatus() {

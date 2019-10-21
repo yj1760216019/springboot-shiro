@@ -1,10 +1,17 @@
 package com.carlinx.shiro.entity.dbo;
 
-import javax.persistence.Table;
+import com.carlinx.shiro.base.serializer.JsonSerializerLong;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.*;
 
 @Table(name = "role")
 public class RoleDBO {
     //角色id
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @JsonSerialize(using = JsonSerializerLong.class)
+    @OrderBy("desc")
     private Long roleId;
     //角色名称
     private String roleName;

@@ -15,8 +15,8 @@ spring:
   #数据库相关配置
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://****:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
-    username: "*****"
+    url: jdbc:mysql://******:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+    username: "******"
     password: "******"
     type: com.alibaba.druid.pool.DruidDataSource
 
@@ -44,7 +44,7 @@ mybatis:
 #tkMapper配置
 mapper:
   #通用mapper基类配置
-  mappers: "com.carlinx.shiro.base.tkmapper.BaseMapper"
+  mappers: com.carlinx.shiro.base.tkmapper.BaseMapper
   identity: MYSQL
 
 #分页插件配置

@@ -1,11 +1,15 @@
 package com.carlinx.shiro.config.shiro;
 
 
+import com.carlinx.shiro.config.realm.ManageRealm;
 import com.carlinx.shiro.config.realm.UserRealm;
 import com.carlinx.shiro.filter.JwtFilter;
 import com.carlinx.shiro.utils.cache.ShiroCacheManager;
+import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
+import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -15,7 +19,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Configuration
 public class ShiroConfig {
@@ -28,7 +34,12 @@ public class ShiroConfig {
     public DefaultWebSecurityManager getSecurityManager(){
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         //使用自定义Realm
-        manager.setRealm(getUserRealm());
+        manager.setAuthenticator(getMyModularRealmAuthenticator());
+        List<Realm> realms = new ArrayList<>();
+        realms.add(getUserRealm());
+        realms.add(getManageRealm());
+        manager.setRealms(realms);
+
         //关闭shiro自带的session
         DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
         DefaultSessionStorageEvaluator sessionStorageEvaluator = new DefaultSessionStorageEvaluator();
@@ -42,11 +53,33 @@ public class ShiroConfig {
 
 
     /**
-     * 自定义realm
+     * 自定义UserRealm
      * @return
      */
     public UserRealm getUserRealm(){
-        return new UserRealm();
+        UserRealm userRealm = new UserRealm();
+        userRealm.setName("userRealm");
+        return userRealm;
+    }
+
+
+    /**
+     * 自定义ManageRealm
+     * @return
+     */
+    public ManageRealm getManageRealm(){
+        ManageRealm manageRealm = new ManageRealm();
+        manageRealm.setName("manageRealm");
+        return manageRealm;
+    }
+
+
+
+    @Bean
+    public ModularRealmAuthenticator getMyModularRealmAuthenticator(){
+        MyModularRealmAuthenticator myModularRealmAuthenticator = new MyModularRealmAuthenticator();
+        myModularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
+        return myModularRealmAuthenticator;
     }
 
 

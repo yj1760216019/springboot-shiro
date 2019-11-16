@@ -17,7 +17,7 @@ public class TestController {
 
     @GetMapping("/shiro")
     @ApiOperation("shiro测试")
-    @RequiresPermissions(value = {"user:add"})
+    @RequiresAuthentication
     public JsonResult test(){
         return JsonResult.success("你好 世界");
     }

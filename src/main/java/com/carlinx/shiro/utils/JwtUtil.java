@@ -16,22 +16,14 @@ public class JwtUtil {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     //accessToken过期时间
-
+    @Value("${access-token-expire-time}")
     private static String accessTokenExpireTime = "1200";
 
     //Jwt认证加密私钥(Base64加密)
-
+    @Value("${encrypt-jwt-key}")
     private static String encryptJWTKey = "U0JBUElOENhspJrzkyNjQ1NA";
 
-    @Value("${access-token-expire-time}")
-    public static void setAccessTokenExpireTime(String accessTokenExpireTime) {
-        JwtUtil.accessTokenExpireTime = accessTokenExpireTime;
-    }
 
-    @Value("${encrypt-jwt-key}")
-    public static void setEncryptJWTKey(String encryptJWTKey) {
-        JwtUtil.encryptJWTKey = encryptJWTKey;
-    }
 
     /**
      * 校验token是否正确

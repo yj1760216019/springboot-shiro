@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -22,6 +24,8 @@ public class RedisOperator {
         return redisTemplate;
     }
 
+
+    //*****************************通用*********************************
 
     /**
      * 指定缓存失效时间
@@ -84,6 +88,30 @@ public class RedisOperator {
 
 
     /**
+     * 前缀通配key删除
+     * @param prefix
+     * @return
+     */
+    public Boolean deletePrefix(String prefix){
+        try {
+            String key = prefix+"*";
+            Set<String> keys = redisTemplate.keys(key);
+            if(keys.size() > 0){
+                redisTemplate.delete(keys);
+            }
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+
+    //*****************************String类型*********************************
+
+    /**
      * 普通缓存获取
      * @param key
      * @return
@@ -126,5 +154,86 @@ public class RedisOperator {
             return false;
         }
     }
+
+
+
+    //*****************************Hash类型*********************************
+
+
+    /**
+     * 加hash缓存
+     * @param key
+     * @param hashKey
+     * @param hashValue
+     * @return
+     */
+    public Boolean setHash(String key,String hashKey,String hashValue){
+        try {
+            redisTemplate.opsForHash().put(key,hashKey,hashValue);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    /**
+     * 判断hashKey是否存在
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public Boolean hasHashKey(String key,String hashKey){
+        try {
+            Boolean result = redisTemplate.opsForHash().hasKey(key, hashKey);
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    /**
+     * 根据key获取所有hashkey   hashvalue
+     * @param key
+     * @return
+     */
+    public Map<Object,Object> getAllHashByKey(String key){
+        try {
+            Map<Object, Object> result = redisTemplate.opsForHash().entries(key);
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * 获取hash
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public Object getHash(String key,String hashKey){
+        try {
+            Object result = redisTemplate.opsForHash().get(key, hashKey);
+            return result;
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
 }
